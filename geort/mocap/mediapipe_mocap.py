@@ -10,9 +10,8 @@ from mediapipe import solutions
 from mediapipe.framework.formats import landmark_pb2
 from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
-import pyrealsense2 as rs
 import cv2
-from geort.mocap.camera.realsense import RealSenseCamera
+from geort.mocap.camera.webcam import WebcamCamera
 
 class MediaPipeHandProcessor:
     def __init__(self):
@@ -187,7 +186,7 @@ class MediaPipeHandDetector:
 
 class MediaPipeMocap:
     def __init__(self):
-        self.camera = RealSenseCamera()
+        self.camera = WebcamCamera()
         self.detector = MediaPipeHandDetector()
         self.status = 'idle'
 
