@@ -1,0 +1,49 @@
+{
+    "name": "dexhand_right",
+    "urdf_path": "./assets/dexhand_right/dexhand021_right_simplified.urdf",
+    "base_link": "right_hand_base",
+    "joint_order": [
+        "r_f_joint1_1", "r_f_joint1_2", "r_f_joint1_3", "r_f_joint1_4",
+        "r_f_joint2_1", "r_f_joint2_2", "r_f_joint2_3", "r_f_joint2_4",
+        "r_f_joint3_1", "r_f_joint3_2", "r_f_joint3_3", "r_f_joint3_4",
+        "r_f_joint4_1", "r_f_joint4_2", "r_f_joint4_3", "r_f_joint4_4",
+        "r_f_joint5_1", "r_f_joint5_2", "r_f_joint5_3", "r_f_joint5_4"
+    ],
+    "fingertip_link": [
+        {
+            "name": "thumb", 
+            "link": "r_f_link1_tip",
+            "joint": ["r_f_joint1_1", "r_f_joint1_2", "r_f_joint1_3", "r_f_joint1_4"],
+            "center_offset": [0.0, 0.0, 0.0],
+            "human_hand_id": 4
+        },
+        {
+            "name": "index",
+            "link": "r_f_link2_tip",
+            "joint": ["r_f_joint2_1", "r_f_joint2_2", "r_f_joint2_3", "r_f_joint2_4"],
+            "center_offset": [0.0, 0.0, 0.0],
+            "human_hand_id": 8 
+        },
+        {
+            "name": "middle", 
+            "link": "r_f_link3_tip",
+            "joint": ["r_f_joint3_1", "r_f_joint3_2", "r_f_joint3_3", "r_f_joint3_4"],
+            "center_offset": [0.0, 0.0, 0.0],
+            "human_hand_id": 12
+        },
+        {
+            "name": "ring",
+            "link": "r_f_link4_tip",
+            "joint": ["r_f_joint4_1", "r_f_joint4_2", "r_f_joint4_3", "r_f_joint4_4"],
+            "center_offset": [0.0, 0.0, 0.0],
+            "human_hand_id": 16
+        },
+        {
+            "name": "pinky",
+            "link": "r_f_link5_tip",
+            "joint": ["r_f_joint5_1", "r_f_joint5_2", "r_f_joint5_3", "r_f_joint5_4"],
+            "center_offset": [0.0, 0.0, 0.0],
+            "human_hand_id": 20
+        }
+    ]
+}
