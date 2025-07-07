@@ -45,7 +45,7 @@ def load_model(tag='', epoch=0):
     
     checkpoint_name = ''
     for checkpoint in all_checkpoints:
-        if tag in checkpoint:
+        if tag in checkpoint and ".pth" not in checkpoint:
             checkpoint_name = checkpoint
             break 
 
