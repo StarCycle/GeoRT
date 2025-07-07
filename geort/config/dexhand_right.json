@@ -1,6 +1,6 @@
 {
     "name": "dexhand_right",
-    "urdf_path": "./assets/dexhand_right/dexhand021_right_simplified.urdf",
+    "urdf_path": "./assets/dexrobot_urdf/urdf/dexhand021_right_simplified.urdf",
     "base_link": "right_hand_base",
     "joint_order": [
         "r_f_joint1_1", "r_f_joint1_2", "r_f_joint1_3", "r_f_joint1_4",
