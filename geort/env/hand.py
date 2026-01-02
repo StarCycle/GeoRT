@@ -183,6 +183,12 @@ class HandKinematicModel:
 
         for i in range(len(qpos)):
             self.all_joints[i].set_drive_target(self.qpos_target[i])
+    
+    def set_qpos(self, qpos):
+        qpos = np.clip(qpos, self.joint_lower_limit + 1e-3, self.joint_upper_limit - 1e-3)
+        qpos = self.convert_user_order_to_sim_order(qpos)
+        self.qpos_target = qpos 
+        self.hand.set_qpos(qpos)
 
 class HandViewerEnv:
     def __init__(self, model):
@@ -204,6 +210,10 @@ class HandViewerEnv:
 
     def update(self):
         self.scene.step()
+        self.scene.update_render()  
+        self.viewer.render()
+    
+    def update_render_only(self):
         self.scene.update_render()  
         self.viewer.render()
 

@@ -1,1 +1,6 @@
 *.pyc
+*.pth
+checkpoint/*
+*.egg-info/
+imgui.ini
+data/*

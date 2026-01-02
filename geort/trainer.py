@@ -155,7 +155,7 @@ class GeoRTTrainer:
         os.makedirs("checkpoint", exist_ok=True)
         return f"checkpoint/fk_model_{name}.pth"
     
-    def get_robot_neural_fk_model(self, force_train=False):
+    def get_robot_neural_fk_model(self, device, force_train=False):
         '''
             This function will return a forward kinematics model.
             If the fk model does not exist, this function will train one first.
@@ -167,7 +167,7 @@ class GeoRTTrainer:
         
         # Model.
         print(self.get_keypoint_info()["joint"])
-        fk_model = FKModel(keypoint_joints=self.get_keypoint_info()["joint"]).cuda()
+        fk_model = FKModel(keypoint_joints=self.get_keypoint_info()["joint"]).to(device)
         
         # If the model exists, load it.
         fk_checkpoint_path = self.get_fk_checkpoint_path()
@@ -186,8 +186,8 @@ class GeoRTTrainer:
             for epoch in range(200):
                 all_fk_error = 0
                 for batch_idx, batch in enumerate(fk_dataloader):
-                    keypoint = batch["keypoint"].cuda().float()
-                    qpos = batch["qpos"].cuda().float() 
+                    keypoint = batch["keypoint"].to(device).float()
+                    qpos = batch["qpos"].to(device).float() 
                     qpos = qpos_normalizer.normalize_torch(qpos)
                     predicted_keypoint = fk_model(qpos)
                     fk_optim.zero_grad()
@@ -210,8 +210,9 @@ class GeoRTTrainer:
             This is the main trainer.
         '''
 
-        fk_model = self.get_robot_neural_fk_model()
-        ik_model = IKModel(keypoint_joints=self.get_keypoint_info()["joint"]).cuda()
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        fk_model = self.get_robot_neural_fk_model(device)
+        ik_model = IKModel(keypoint_joints=self.get_keypoint_info()["joint"]).to(device)
         os.makedirs("./checkpoint", exist_ok=True)
 
         ik_optim = optim.AdamW(ik_model.parameters(), lr=1e-4)
@@ -269,7 +270,7 @@ class GeoRTTrainer:
             for batch_idx, batch in enumerate(point_dataloader):
                 direction_loss = 0
 
-                point = batch.cuda() # [B, N, 3]
+                point = batch.to(device) # [B, N, 3]
                 joint = ik_model(point) # [B, DOF]
                 embedded_point = fk_model(joint) # [B, N, 3]
 
@@ -298,7 +299,7 @@ class GeoRTTrainer:
                 
                 # [Chamfer loss]
                 selected_idx = np.random.randint(0, robot_points.shape[1], 2048) 
-                target = torch.from_numpy(robot_points[:, selected_idx, :]).permute(1, 0, 2).float().cuda()
+                target = torch.from_numpy(robot_points[:, selected_idx, :]).permute(1, 0, 2).float().to(device)
                 
                 chamfer_loss = 0
                 for i in range(n_keypoints):
@@ -306,7 +307,7 @@ class GeoRTTrainer:
 
                 # [Direction Loss]
                 direction = F.normalize(torch.randn_like(point), dim=-1, p=2)
-                scale = 0.001 + torch.rand(point.size(0)).cuda().unsqueeze(-1).unsqueeze(-1) * 0.01
+                scale = 0.001 + torch.rand(point.size(0)).to(device).unsqueeze(-1).unsqueeze(-1) * 0.01
                 point_delta = point + direction * scale 
 
                 joint_delta = ik_model(point_delta)
@@ -326,7 +327,7 @@ class GeoRTTrainer:
                 #     collision_loss = criterion(safe_logits, real_labels)
                 
                 # collision Loss integration pending.
-                collision_loss = torch.tensor([0.0]).cuda()
+                collision_loss = torch.tensor([0.0]).to(device)
 
                 loss = direction_loss + \
                        chamfer_loss * w_chamfer + \
